@@ -24,9 +24,27 @@ const STATUS_CONFIG: Record<string, { label: string; className: string; icon: an
 function CampaignModal({ onClose }: any) {
   const { user } = useAuthStore();
   const qc = useQueryClient();
-  const { register, control, handleSubmit, watch, formState: { errors } } = useForm({
-    defaultValues: { sendMode: 'immediate', timezone: 'UTC' },
-  });
+  type CampaignFormValues = {
+  name: string;
+  templateId: string;
+  gmailConnectionId: string;
+  defaultSubject?: string;
+  sendMode: 'immediate' | 'scheduled' | 'batched';
+  scheduledAt?: string;
+  timezone: string;
+};
+
+const { register, control, handleSubmit, watch, formState: { errors } } = useForm<CampaignFormValues>({
+  defaultValues: {
+    name: '',
+    templateId: '',
+    gmailConnectionId: '',
+    defaultSubject: '',
+    sendMode: 'immediate',
+    scheduledAt: '',
+    timezone: 'UTC',
+  },
+});
   const sendMode = watch('sendMode');
 
   const { data: templatesData } = useQuery({ queryKey: ['templates'], queryFn: () => templatesApi.list() });
